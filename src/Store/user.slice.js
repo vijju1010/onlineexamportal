@@ -83,43 +83,55 @@ export const checkAuth = () => {
     };
 };
 
-export const updateUserProfileAsync = (user, formdata) => {
+export const updateUserProfileAsync = (user) => {
     return async (dispatch) => {
+        const token = localStorage.getItem('token');
+        console.log(user, 'user');
+        if (token) {
+            fetch('http://localhost:3001/updateUserProfile', {
+                method: 'POST',
+                headers: {
+                    Authorization: token,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(user),
+            })
+                .then((res) => {
+                    return res.json();
+                })
+                .then((res) => {
+                    if (res.success) {
+                        dispatch(setUser(res.user));
+                        localStorage.setItem('user', JSON.stringify(res.user));
+                    }
+                });
+        }
+    };
+};
+
+export const updateProfileImgAsync = (formdata, user) => {
+    console.log(formdata, 'formdata');
+    console.log(user, 'user');
+    return async (dispatch) => {
+        const token = localStorage.getItem('token');
         fetch('https://api.cloudinary.com/v1_1/demo/image/upload', {
             method: 'POST',
             body: formdata,
         })
-            .then((response) => {
-                return response.text();
-            })
+            .then((response) => response.json())
             .then((data) => {
-                document.getElementById('data').innerHTML += data;
-                const token = localStorage.getItem('token');
-                console.log(user, 'user');
+                console.log(data, 'data');
                 if (token) {
-                    // const response = await fetch(
-                    //     'http://localhost:3001/updateUserProfile',
-                    //     {
-                    //         method: 'POST',
-                    //         headers: {
-                    //             Authorization: token,
-                    //             'Content-Type': 'application/json',
-                    //         },
-                    //         body: JSON.stringify(user),
-                    //     }
-                    // );
-                    // const res = await response.json();
-                    // if (res.success) {
-                    //     dispatch(setUser(res.user));
-                    //     localStorage.setItem('user', JSON.stringify(res.user));
-                    // }
-                    fetch('http://localhost:3001/updateUserProfile', {
+                    fetch('http://localhost:3001/updateProfileImg', {
                         method: 'POST',
                         headers: {
                             Authorization: token,
                             'Content-Type': 'application/json',
                         },
-                        body: JSON.stringify(user),
+                        body: JSON.stringify({
+                            user: user,
+                            img: data.secure_url,
+                        }),
                     })
                         .then((res) => {
                             return res.json();

@@ -1,8 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import Navbar from './Navbar';
 import { useSelector, useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import { checkAuth, updateUserProfileAsync } from '../Store/user.slice';
+import { useNavigate, Link } from 'react-router-dom';
+import {
+    checkAuth,
+    updateUserProfileAsync,
+    updateProfileImgAsync,
+} from '../Store/user.slice';
 const Profile = () => {
     const [editble, setEditble] = useState(true);
     const localUser = useSelector((state) => state.user);
@@ -10,24 +14,33 @@ const Profile = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [user, setUser] = useState(localUser.user);
+    const [editimage, setEditimage] = useState(false);
     const [profileimg, setProfileimg] = useState(null);
     const changeHandler = (e) => {
         setUser({ ...user, [e.target.name]: e.target.value });
     };
-    const formdata = new FormData();
+    console.log(user, 'user');
+    const [formdata, setFormdata] = useState({});
     const handleUpdate = (e) => {
-        dispatch(updateUserProfileAsync(user, formdata));
-        setEditble(true);
+        dispatch(updateUserProfileAsync(user));
+        setEditimage(false);
+    };
+    const handleupdateimg = (e) => {
+        dispatch(updateProfileImgAsync(formdata, user));
+        setEditimage(false);
     };
     const fileChangeHandler = (e) => {
-        formdata.append('profileimg', e.target.files[0]);
+        const formdata = new FormData();
+        formdata.append('file', e.target.files[0]);
+        formdata.append('upload_preset', 'docs_upload_example_us_preset');
         console.log(formdata.values(), 'formdata');
+        setFormdata(formdata);
     };
     useEffect(() => {
         dispatch(checkAuth());
-        // if (!isAuthenticated) {
-        //     navigate('/login');
-        // }
+        if (!isAuthenticated) {
+            navigate('/login');
+        }
     }, [dispatch, isAuthenticated]);
 
     return (
@@ -35,38 +48,61 @@ const Profile = () => {
             <Navbar />
             <div class='container rounded bg-white mt-5 mb-5'>
                 <div class='row'>
-                    <form encType='multipart/form-data'>
-                        <div class='col-md-3 border-right'>
-                            <div class='d-flex flex-column align-items-center text-center p-3 py-5'>
+                    <div class='col-md-3 border-right'>
+                        <div class='d-flex flex-column align-items-center text-center p-3 py-5'>
+                            <form encType='multipart/form-data'>
                                 <img
                                     class='rounded-circle mt-5'
                                     width='150px'
+                                    height='250px'
                                     alt='profile'
-                                    src='https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg'
+                                    src={
+                                        user.profileimg != '' ||
+                                        user.profileimg != null
+                                            ? user.profileimg
+                                            : 'https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg'
+                                    }
                                 />
-                                {!editble ? (
+
+                                {editimage ? (
                                     <>
-                                        <i class='fa fa-edit'></i>
                                         <input
                                             type='file'
                                             name='profileimg'
                                             onChange={fileChangeHandler}
                                         />
+                                        <button
+                                            class='btn btn-primary mt-3'
+                                            onClick={handleupdateimg}>
+                                            Upload
+                                        </button>
                                     </>
                                 ) : (
-                                    <div></div>
+                                    <i
+                                        class='fa fa-edit'
+                                        onClick={() => {
+                                            setEditimage(true);
+                                        }}></i>
                                 )}
-                                <span class='font-weight-bold'>
-                                    {user.name}
-                                </span>
-                                <span class='text-black-50'>
-                                    admin@mail.com.my
-                                </span>
-                                <span> </span>
+                            </form>
+                            <span class='font-weight-bold'>{user.name}</span>
+                            <span class='text-black-50'>admin@mail.com.my</span>
+                            <div className='card w-75'>
+                                <ul className='list-group list-group-flush '>
+                                    <li className='list-group-item'>
+                                        <Link to='/students'>Students</Link>
+                                    </li>
+                                    <li className='list-group-item'>
+                                        <Link to='/addexams'>Add Exams</Link>
+                                    </li>
+                                </ul>
                             </div>
+                            <span></span>
                         </div>
-                        <div class='col-md-5 border-right'>
-                            <div class='p-3 py-5'>
+                    </div>
+                    <div class='col-md-5 border-right'>
+                        <div class='p-3 py-5'>
+                            <form>
                                 <div class='d-flex justify-content-between align-items-center mb-3'>
                                     <h4 class='font-weight-bold'>Profile</h4>
                                 </div>
@@ -174,9 +210,9 @@ const Profile = () => {
                                         </button>
                                     </div>
                                 )}
-                            </div>
+                            </form>
                         </div>
-                    </form>
+                    </div>
                 </div>
             </div>
         </div>

@@ -22,6 +22,7 @@ const usersSchema = new mongoose.Schema({
     name: String,
     surname: String,
     email: String,
+    profileimg: String,
     password: String,
     access: String,
     address: String,
@@ -50,9 +51,28 @@ const reportSchema = new mongoose.Schema({
     date: String,
 });
 const Report = mongoose.model('Report', reportSchema);
+app.post('/updateProfileImg', (req, res) => {
+    const { user, img } = req.body;
+
+    User.findOneAndUpdate(
+        { _id: user._id },
+        { profileimg: img },
+        {
+            new: true,
+        },
+        (err, doc) => {
+            if (err) {
+                res.json({ success: true, err });
+            } else {
+                res.json({ success: true, user: doc });
+            }
+        }
+    );
+});
 
 app.post('/updateUserProfile', (req, res) => {
-    const { name, _id, surname, mobile, address, education } = req.body;
+    const { name, _id, surname, mobile, address, education, profileimg } =
+        req.body;
     console.log(req.body, 'req.body');
     User.findOneAndUpdate(
         { _id: _id },
@@ -62,6 +82,7 @@ app.post('/updateUserProfile', (req, res) => {
             mobile: mobile,
             address: address,
             education: education,
+            profileimg: profileimg,
         },
         { new: true },
         (err, doc) => {
@@ -74,27 +95,6 @@ app.post('/updateUserProfile', (req, res) => {
             }
         }
     );
-
-    // User.findOneAndUpdate(
-    //     { email: email },
-    //     {
-    //         name: name,
-    //         surname: surname,
-    //         mobile: mobile,
-    //         address: address,
-    //         education: education,
-    //         password: password,
-    //         access: access,
-    //     },
-    //     { new: true },
-    //     (err, doc) => {
-    //         if (err) {
-    //             res.send(err);
-    //         } else {
-    //             res.send(doc);
-    //         }
-    //     }
-    // );
 });
 
 app.post('/genreport', (req, res) => {

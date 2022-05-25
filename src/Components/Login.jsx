@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 const Login = () => {
     const dispatch = useDispatch();
-    const user = useSelector((state) => state.user);
     const navigate = useNavigate();
     const isAuthenticated = useSelector((state) => state.user.isAuthenticated);
     useEffect(() => {
@@ -13,7 +12,7 @@ const Login = () => {
         if (isAuthenticated) {
             navigate('/exams');
         }
-    }, [dispatch, isAuthenticated]);
+    }, [dispatch, isAuthenticated, navigate]);
     const handleSubmit = (e) => {
         e.preventDefault();
         const user = {

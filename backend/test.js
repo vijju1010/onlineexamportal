@@ -1,0 +1,35 @@
+const g = {
+    asset_id: '160020c41748c0c882ea6c7eccfddc48',
+    public_id:
+        'docs_uploading_example/WhatsApp_Image_2022-02-24_at_5.15.44_PM_k865bv',
+    version: 1653461544,
+    version_id: '8e3c0b86c1cf033aa69bf265409853bc',
+    signature: '60f2d2f90bf2a1ce5c6c77ddb1388c0fd50eb662',
+    width: 720,
+    height: 1280,
+    format: 'jpg',
+    resource_type: 'image',
+    created_at: '2022-05-25T06:52:24Z',
+    tags: [],
+    pages: 1,
+    bytes: 193734,
+    type: 'upload',
+    etag: 'b334e350e92345a6b18a817d7075d830',
+    placeholder: false,
+    url: 'http://res.cloudinary.com/demo/image/upload/v1653461544/docs_uploading_example/WhatsApp_Image_2022-02-24_at_5.15.44_PM_k865bv.jpg',
+    secure_url:
+        'https://res.cloudinary.com/demo/image/upload/v1653461544/docs_uploading_example/WhatsApp_Image_2022-02-24_at_5.15.44_PM_k865bv.jpg',
+    folder: 'docs_uploading_example',
+    access_mode: 'public',
+    context: {},
+    metadata: {
+        color_id: ['color1', 'color2'],
+        colors_id: ['color1', 'color2'],
+        g0btpgkczvarsmkwli2e: ['ojnfizxyivpox6opxspo'],
+        s81oevuzdbvdqq8i6voe: 'demo',
+    },
+    existing: false,
+    original_filename: 'WhatsApp Image 2022-02-24 at 5.15.44 PM',
+    original_extension: 'jpeg',
+};
+console.log(g.url, 'g.url');

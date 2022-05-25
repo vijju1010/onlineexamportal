@@ -15,6 +15,8 @@ import { Provider } from 'react-redux';
 import AddExam from './Components/AddExam';
 import Report from './Components/Report';
 import Reports from './Components/Reports';
+import Adminprofile from './Components/Adminprofile';
+import Students from './Components/Students';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -34,6 +36,8 @@ root.render(
                     <Route path='/profile' element={<Profile />} />
                     <Route path='/addexam' element={<AddExam />} />
                     <Route path='/exams/:id' element={<Exam />} />
+                    <Route path='/students' element={<Students />} />
+                    <Route path='/profile/admin' element={<Adminprofile />} />
                 </Routes>
             </BrowserRouter>
         </Provider>
