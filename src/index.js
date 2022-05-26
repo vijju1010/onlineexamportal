@@ -34,7 +34,7 @@ root.render(
                     <Route path='/reports' element={<Reports />} />
                     <Route path='/exams' element={<Exams />} />
                     <Route path='/profile' element={<Profile />} />
-                    <Route path='/addexam' element={<AddExam />} />
+                    <Route path='/addexams' element={<AddExam />} />
                     <Route path='/exams/:id' element={<Exam />} />
                     <Route path='/students' element={<Students />} />
                     <Route path='/profile/admin' element={<Adminprofile />} />

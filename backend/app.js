@@ -43,7 +43,9 @@ const examsSchema = new mongoose.Schema({
 const Exam = mongoose.model('Exam', examsSchema);
 
 const reportSchema = new mongoose.Schema({
+    user: Object,
     userId: String,
+    userName: String,
     examId: String,
     examName: String,
     questions: Array,
@@ -63,6 +65,26 @@ app.post('/updateProfileImg', (req, res) => {
         (err, doc) => {
             if (err) {
                 res.json({ success: true, err });
+            } else {
+                res.json({ success: true, user: doc });
+            }
+        }
+    );
+});
+app.post('/updateUserPassword', (req, res) => {
+    const { id, password } = req.body;
+    console.log(id, 'id');
+    console.log(password.password, 'password');
+
+    User.findOneAndUpdate(
+        { _id: id },
+        { password: password.password },
+        {
+            new: true,
+        },
+        (err, doc) => {
+            if (err) {
+                res.json({ success: false, err });
             } else {
                 res.json({ success: true, user: doc });
             }
@@ -98,8 +120,9 @@ app.post('/updateUserProfile', (req, res) => {
 });
 
 app.post('/genreport', (req, res) => {
-    const { examId, answers, userId, score } = req.body;
-    console.log(examId, answers, userId, score, '/genreport');
+    const { examId, answers, user, score } = req.body;
+    // console.log(examId, answers, user, score, '/genreport');
+    // console.log(user.user._id, 'user');
     const exam = Exam.findOne({ _id: examId }, (err, doc) => {
         if (err) {
             console.log(err);
@@ -131,11 +154,13 @@ app.post('/genreport', (req, res) => {
             const date = new Date().toLocaleDateString();
             const report = new Report({
                 examName: doc.name,
+                user,
                 examId,
                 questions,
                 score,
                 date,
-                userId,
+                userId: user.user._id,
+                userName: user.user.name,
             });
             report.save((err, doc) => {
                 if (err) {
@@ -152,6 +177,15 @@ app.post('/getreports', (req, res) => {
     const { userId } = req.body;
     console.log(userId, '/getreports');
     Report.find({ userId }, (err, doc) => {
+        if (err) {
+            res.json({ success: false, err });
+        } else {
+            res.json({ success: true, reports: doc });
+        }
+    });
+});
+app.get('/getallreports', (req, res) => {
+    Report.find({}, (err, doc) => {
         if (err) {
             res.json({ success: false, err });
         } else {

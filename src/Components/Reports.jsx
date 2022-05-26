@@ -45,7 +45,7 @@ const Reports = () => {
             dispatch(getReportAsync(user.user._id));
             console.log(reports, 'reports');
         }
-    }, [dispatch, isAuthenticated, reports]);
+    }, [dispatch, isAuthenticated]);
     return (
         <div>
             <Navbar />

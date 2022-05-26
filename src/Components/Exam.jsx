@@ -13,6 +13,8 @@ const Exam = () => {
     const user = useSelector((state) => state.user);
     const report = useSelector((state) => state.exam.report);
     const isAuthenticated = useSelector((state) => state.user.isAuthenticated);
+    const [questionIndex, setQuestionIndex] = React.useState(0);
+    const [question, setQuestion] = React.useState(exam.questions[0]);
     console.log(report, 'report');
     useEffect(() => {
         dispatch(checkAuth());
@@ -24,49 +26,88 @@ const Exam = () => {
         e.preventDefault();
         let tempscore = 0;
         exam.questions.forEach((question, index) => {
-            if (question.answer == checked[question._id]) {
+            if (
+                question.options[parseInt(question.answer) - 1] ==
+                checked[question._id]
+            ) {
                 tempscore += 1;
             }
         });
         console.log(tempscore, 'tempscore');
         setScore(tempscore);
-        dispatch(genReportAsync(examId, checked, tempscore, user.user._id));
+        dispatch(genReportAsync(examId, checked, tempscore, user));
         navigate('/report');
     };
     const [score, setScore] = React.useState('');
     const [checked, setChecked] = React.useState({});
     return (
-        <div>
-            <form onSubmit={handleSubmit}>
-                <h1>{exam.name}</h1>
-                <h2>{exam.questions.length} Questions</h2>
-                {exam.questions.map((question, index) => {
-                    return (
-                        <div key={index}>
-                            <h3>{question.question} ? </h3>
-                            {question.options.map((option, index) => {
+        <div className='container mt-5'>
+            <div className='.d-flex justify-content-center row'>
+                <div className='col-md-10 col-lg-10'>
+                    <div className='border'>
+                        <div className='question bg-white p-3 border-bottom'>
+                            <div className='d-flex flex-row justify-content-between align-items-center mcq'>
+                                <h4 className='d-flex justify-content-center mt-3 mb-3'>
+                                    {exam.name}
+                                </h4>
+                            </div>
+                        </div>
+                        <form onSubmit={handleSubmit}>
+                            {exam.questions.map((question, index) => {
                                 return (
-                                    <div key={index}>
-                                        <input
-                                            type='radio'
-                                            name={question._id}
-                                            value={option}
-                                            onChange={(e) => {
-                                                setChecked({
-                                                    ...checked,
-                                                    [question._id]: option,
-                                                });
-                                            }}
-                                        />
-                                        {option}
+                                    <div
+                                        key={index}
+                                        className='question p-3 border-bottom ml-5'>
+                                        <div class='d-flex flex-row align-items-center question-title'>
+                                            <h4 class='text-danger mr-5'>
+                                                Q.{questionIndex + 1}
+                                            </h4>
+                                            <h3 class='mt-1 ml-2'>
+                                                {question.question} ?
+                                            </h3>
+                                        </div>
+                                        <div className='options ml-5'>
+                                            {question.options.map(
+                                                (option, index) => {
+                                                    return (
+                                                        <div key={index}>
+                                                            <input
+                                                                type='radio'
+                                                                className='mr-3'
+                                                                name={
+                                                                    question._id
+                                                                }
+                                                                value={option}
+                                                                onChange={(
+                                                                    e
+                                                                ) => {
+                                                                    setChecked({
+                                                                        ...checked,
+                                                                        [question._id]:
+                                                                            option,
+                                                                    });
+                                                                }}
+                                                            />
+                                                            {option}
+                                                        </div>
+                                                    );
+                                                }
+                                            )}
+                                        </div>
                                     </div>
                                 );
                             })}
-                        </div>
-                    );
-                })}
-                <button>Submit</button>
-            </form>
+                            <div className='d-flex justify-content-center mt-3 mb-3'>
+                                <button
+                                    type='submit'
+                                    className='btn btn-danger mr-3'>
+                                    Submit
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
     );
 };

@@ -6,6 +6,7 @@ import {
     checkAuth,
     updateUserProfileAsync,
     updateProfileImgAsync,
+    updateUserPasswordAsync,
 } from '../Store/user.slice';
 const Profile = () => {
     const [editble, setEditble] = useState(true);
@@ -16,10 +17,33 @@ const Profile = () => {
     const [user, setUser] = useState(localUser.user);
     const [editimage, setEditimage] = useState(false);
     const [profileimg, setProfileimg] = useState(null);
+    const [ch, setCh] = useState(false);
+    const [passwords, setPasswords] = useState({
+        currentpassword: user.password,
+        newpassword: '',
+        confirmpassword: '',
+    });
     const changeHandler = (e) => {
         setUser({ ...user, [e.target.name]: e.target.value });
     };
-    console.log(user, 'user');
+    const changePasswordHandler = (e) => {
+        setPasswords({ ...passwords, [e.target.name]: e.target.value });
+    };
+    const handleChangePassword = () => {
+        // e.preventDefault();
+        if (
+            passwords.newpassword === passwords.confirmpassword &&
+            passwords.newpassword.length > 0
+        ) {
+            dispatch(
+                updateUserPasswordAsync({
+                    password: passwords.newpassword,
+                })
+            );
+        }
+    };
+
+    // console.log(user, 'user');
     const [formdata, setFormdata] = useState({});
     const handleUpdate = (e) => {
         dispatch(updateUserProfileAsync(user));
@@ -33,8 +57,8 @@ const Profile = () => {
         const formdata = new FormData();
         formdata.append('file', e.target.files[0]);
         formdata.append('upload_preset', 'docs_upload_example_us_preset');
-        console.log(formdata.values(), 'formdata');
-        setFormdata(formdata);
+        // console.log(formdata.values(), 'formdata');
+        // setFormdata(formdata);
     };
     useEffect(() => {
         dispatch(checkAuth());
@@ -86,17 +110,23 @@ const Profile = () => {
                                 )}
                             </form>
                             <span class='font-weight-bold'>{user.name}</span>
-                            <span class='text-black-50'>admin@mail.com.my</span>
-                            <div className='card w-75'>
-                                <ul className='list-group list-group-flush '>
-                                    <li className='list-group-item'>
-                                        <Link to='/students'>Students</Link>
-                                    </li>
-                                    <li className='list-group-item'>
-                                        <Link to='/addexams'>Add Exams</Link>
-                                    </li>
-                                </ul>
-                            </div>
+                            <span class='text-black-50'>{user.email}</span>
+                            {user.access === 'admin' ? (
+                                <div className='card w-75'>
+                                    <ul className='list-group list-group-flush '>
+                                        <li className='list-group-item'>
+                                            <Link to='/students'>Students</Link>
+                                        </li>
+                                        <li className='list-group-item'>
+                                            <Link to='/addexams'>
+                                                Add Exams
+                                            </Link>
+                                        </li>
+                                    </ul>
+                                </div>
+                            ) : (
+                                <></>
+                            )}
                             <span></span>
                         </div>
                     </div>
@@ -211,6 +241,85 @@ const Profile = () => {
                                     </div>
                                 )}
                             </form>
+
+                            {ch ? (
+                                <div class='mt-5 text-center'>
+                                    <form>
+                                        <div class='row'>
+                                            <div class='col-md-12'>
+                                                <label class='labels'>
+                                                    Current Password
+                                                </label>
+                                                <input
+                                                    type='text'
+                                                    name='currentpassword'
+                                                    disabled={true}
+                                                    class='form-control'
+                                                    placeholder='current password'
+                                                    value={
+                                                        passwords.currentpassword
+                                                    }
+                                                    onChange={
+                                                        changePasswordHandler
+                                                    }
+                                                />
+                                            </div>
+                                            <div class='col-md-12'>
+                                                <label class='labels'>
+                                                    New Password
+                                                </label>
+                                                <input
+                                                    type='password'
+                                                    name='newpassword'
+                                                    class='form-control'
+                                                    placeholder='new password'
+                                                    value={
+                                                        passwords.newpassword
+                                                    }
+                                                    onChange={
+                                                        changePasswordHandler
+                                                    }
+                                                />
+                                            </div>
+                                            <div class='col-md-12'>
+                                                <label class='labels'>
+                                                    Confirm Password
+                                                </label>
+                                                <input
+                                                    type='password'
+                                                    name='confirmpassword'
+                                                    class='form-control'
+                                                    placeholder='confirm password'
+                                                    value={
+                                                        passwords.confirmpassword
+                                                    }
+                                                    onChange={
+                                                        changePasswordHandler
+                                                    }
+                                                />
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            ) : null}
+                            <div class='mt-5 text-center'>
+                                <button
+                                    className='btn btn-primary profile-button'
+                                    type='button'
+                                    onClick={() => {
+                                        setCh(!ch);
+                                        if (ch) {
+                                            handleChangePassword();
+                                            setPasswords({
+                                                ...passwords,
+                                                newpassword: '',
+                                                confirmpassword: '',
+                                            });
+                                        }
+                                    }}>
+                                    Change Password
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>

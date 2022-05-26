@@ -83,6 +83,34 @@ export const checkAuth = () => {
     };
 };
 
+export const updateUserPasswordAsync = (password) => {
+    return async (dispatch) => {
+        const token = localStorage.getItem('token');
+        const user = JSON.parse(localStorage.getItem('user'));
+        console.log(user, 'user');
+
+        if (token) {
+            fetch('http://localhost:3001/updateUserPassword', {
+                method: 'POST',
+                headers: {
+                    Authorization: token,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ id: user._id, password }),
+            })
+                .then((res) => {
+                    return res.json();
+                })
+                .then((res) => {
+                    if (res.success) {
+                        dispatch(setUser(res.user));
+                        localStorage.setItem('user', JSON.stringify(res.user));
+                    }
+                });
+        }
+    };
+};
+
 export const updateUserProfileAsync = (user) => {
     return async (dispatch) => {
         const token = localStorage.getItem('token');
@@ -94,7 +122,7 @@ export const updateUserProfileAsync = (user) => {
                     Authorization: token,
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(user),
+                body: JSON.stringify({ user }),
             })
                 .then((res) => {
                     return res.json();
@@ -148,4 +176,14 @@ export const updateProfileImgAsync = (formdata, user) => {
                 }
             });
     };
+};
+const getImgURl = (formdata) => {
+    fetch('https://api.cloudinary.com/v1_1/demo/image/upload', {
+        method: 'POST',
+        body: formdata,
+    })
+        .then((response) => response.json())
+        .then((data) => {
+            console.log(data, 'data');
+        });
 };

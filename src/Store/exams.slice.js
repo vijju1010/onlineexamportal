@@ -3,6 +3,7 @@ const initialState = {
     exams: [],
     report: null,
     reports: [],
+    students: [],
 };
 const examsSlice = createSlice({
     name: 'exams',
@@ -13,15 +14,20 @@ const examsSlice = createSlice({
         },
         setReport: (state, action) => {
             state.report = action.payload;
-            console.log(state.report, 'state.report');
+            // console.log(state.report, 'state.report');
         },
         setReports: (state, action) => {
             state.reports = action.payload;
-            console.log(state.reports, 'state.reports');
+            // console.log(state.reports, 'state.reports');
+        },
+        setStudents: (state, action) => {
+            state.students = action.payload;
+            // console.log(state.students, 'state.students');
         },
     },
 });
-export const { setExams, setReport, setReports } = examsSlice.actions;
+export const { setExams, setReport, setReports, setStudents } =
+    examsSlice.actions;
 export default examsSlice.reducer;
 
 export const getExamsAsync = () => {
@@ -58,15 +64,15 @@ export const addExamAsync = (exam) => {
         }
     };
 };
-export const genReportAsync = (examId, checked, score, userId) => {
-    console.log(examId, checked, score, userId);
+export const genReportAsync = (examId, checked, score, user) => {
+    console.log(examId, checked, score, user);
     return async (dispatch) => {
         const response = await fetch('http://localhost:3001/genreport', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ examId, answers: checked, userId, score }),
+            body: JSON.stringify({ examId, answers: checked, user, score }),
         });
         const res = await response.json();
         if (res.success) {
@@ -93,6 +99,21 @@ export const getReportAsync = (userId) => {
                 if (res.success) {
                     console.log(res.reports, 'res.report');
                     dispatch(setReports(res.reports));
+                } else {
+                    console.log(res.message);
+                }
+            });
+    };
+};
+export const getAllStudents = () => {
+    return async (dispatch) => {
+        fetch('http://localhost:3001/getallreports')
+            .then((response) => response.json())
+            .then((res) => {
+                if (res.success) {
+                    // console.log(res.reports, 'res.reports');
+
+                    dispatch(setStudents(res.reports));
                 } else {
                     console.log(res.message);
                 }
