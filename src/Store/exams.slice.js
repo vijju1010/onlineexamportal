@@ -33,7 +33,7 @@ export default examsSlice.reducer;
 export const getExamsAsync = () => {
     console.log('getExamsAsync');
     return async (dispatch) => {
-        fetch('http://localhost:3001/getexams')
+        fetch('https://mcqbackend.herokuapp.com/getexams')
             .then((response) => response.json())
             .then((res) => {
                 if (res.success) {
@@ -49,13 +49,16 @@ export const getExamsAsync = () => {
 export const addExamAsync = (exam) => {
     console.log(exam, 'exam');
     return async (dispatch) => {
-        const response = await fetch('http://localhost:3001/addexam', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(exam),
-        });
+        const response = await fetch(
+            'https://mcqbackend.herokuapp.com/addexam',
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(exam),
+            }
+        );
         const res = await response.json();
         if (res.success) {
             dispatch(getExamsAsync());
@@ -67,13 +70,16 @@ export const addExamAsync = (exam) => {
 export const genReportAsync = (examId, checked, score, user) => {
     console.log(examId, checked, score, user);
     return async (dispatch) => {
-        const response = await fetch('http://localhost:3001/genreport', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ examId, answers: checked, user, score }),
-        });
+        const response = await fetch(
+            'https://mcqbackend.herokuapp.com/genreport',
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ examId, answers: checked, user, score }),
+            }
+        );
         const res = await response.json();
         if (res.success) {
             console.log('report generated');
@@ -87,7 +93,7 @@ export const genReportAsync = (examId, checked, score, user) => {
 export const getReportAsync = (userId) => {
     console.log(userId, 'user id');
     return async (dispatch) => {
-        fetch('http://localhost:3001/getreports', {
+        fetch('https://mcqbackend.herokuapp.com/getreports', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -107,7 +113,7 @@ export const getReportAsync = (userId) => {
 };
 export const getAllStudents = () => {
     return async (dispatch) => {
-        fetch('http://localhost:3001/getallreports')
+        fetch('https://mcqbackend.herokuapp.com/getallreports')
             .then((response) => response.json())
             .then((res) => {
                 if (res.success) {

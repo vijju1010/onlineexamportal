@@ -31,7 +31,7 @@ export default userSlice.reducer;
 
 export const registerUserAsync = (user) => (dispatch) => {
     console.log(user, 'user');
-    fetch('http://localhost:3001/registeruser', {
+    fetch('https://mcqbackend.herokuapp.com/registeruser', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -44,7 +44,7 @@ export const registerUserAsync = (user) => (dispatch) => {
 
 export const loginAsync = (user) => {
     return async (dispatch) => {
-        const response = await fetch('http://localhost:3001/authenticate', {
+        const response = await fetch('https://mcqbackend.herokuapp.com/authenticate', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -67,7 +67,7 @@ export const checkAuth = () => {
         const token = localStorage.getItem('token');
         console.log(token, 'token');
         if (token) {
-            const response = await fetch('http://localhost:3001/checkAuth', {
+            const response = await fetch('https://mcqbackend.herokuapp.com/checkAuth', {
                 method: 'GET',
                 headers: {
                     Authorization: token,
@@ -90,7 +90,7 @@ export const updateUserPasswordAsync = (password) => {
         console.log(user, 'user');
 
         if (token) {
-            fetch('http://localhost:3001/updateUserPassword', {
+            fetch('https://mcqbackend.herokuapp.com/updateUserPassword', {
                 method: 'POST',
                 headers: {
                     Authorization: token,
@@ -116,7 +116,7 @@ export const updateUserProfileAsync = (user) => {
         const token = localStorage.getItem('token');
         console.log(user, 'user');
         if (token) {
-            fetch('http://localhost:3001/updateUserProfile', {
+            fetch('https://mcqbackend.herokuapp.com/updateUserProfile', {
                 method: 'POST',
                 headers: {
                     Authorization: token,
@@ -150,7 +150,7 @@ export const updateProfileImgAsync = (formdata, user) => {
             .then((data) => {
                 console.log(data, 'data');
                 if (token) {
-                    fetch('http://localhost:3001/updateProfileImg', {
+                    fetch('https://mcqbackend.herokuapp.com/updateProfileImg', {
                         method: 'POST',
                         headers: {
                             Authorization: token,
